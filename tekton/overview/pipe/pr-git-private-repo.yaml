@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: pipeline-git-private-repo-run-
+spec:
+  params:
+  - name: git-repo
+    value: https://github.com/raycon300/gitconfig
+  pipelineRef:
+    name: pipeline-git-private-repo
+  timeouts:
+    pipeline: 20m0s
+  workspaces:
+    - name: codebase
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi

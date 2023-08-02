@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: ler-configmap
+spec:
+  volumes:
+    - name: cores
+      configMap:
+        name: mapa-de-cores # Nome do ConfigMap no OpenShift
+
+  steps:
+    - name: imprimir-cores-do-configmap
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      volumeMounts:
+        - name: cores
+          mountPath: /tmp/cores
+      script: |
+        
+        echo "#### Listando cores do ConfigMap ####"
+
+        ls -l /tmp/cores
+
+        echo "#### Exibindo conteúdo do ConfigMap ####"
+        
+        echo $(cat /tmp/cores/info)
+        echo $(cat /tmp/cores/warning)
+        echo $(cat /tmp/cores/error)
+
+        echo "#### Usando o valor do ConfigMap para colorir texto ####"
+        echo -e "$(cat /tmp/cores/info) Info"
+        echo -e "$(cat /tmp/cores/warning) Warn"
+        echo -e "$(cat /tmp/cores/error) Error"

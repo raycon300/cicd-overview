@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: git-clone-and-list
+spec:
+  params:
+    - name: repositorio
+      type: string
+      description: Repositório a ser clonado
+      default: "https://github.com/raycon300/kakfka-poc"
+
+  workspaces:
+    - name: source
+      description: Local onde o código será clonado
+
+  steps:
+    - name: clone
+      image: alpine/git
+      workingDir: $(workspaces.source.path)
+      command:
+        - /bin/sh
+      args:
+        - -c
+        - git clone -v $(params.repositorio) ./source
+
+    - name: list
+      image: alpine
+      workingDir: $(workspaces.source.path)
+      command:
+        - /bin/sh
+        - -c
+        - ls -l ./source

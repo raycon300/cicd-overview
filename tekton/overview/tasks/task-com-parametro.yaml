@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: task-com-parametro
+spec:
+  params:
+    - name: mensagem
+      type: string
+      description: Mensagem a ser exibida
+      default: "Hello World"
+  steps:
+    - name: print-mensagem
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args: ['-c', 'echo $(params.mensagem)']

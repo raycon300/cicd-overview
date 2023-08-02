@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-com-finalizers
+spec:
+  params:
+    - name: exit-code
+      description: Código de saída da task
+      default: "0"
+      type: string
+  tasks:
+    - name: inline-task
+      params:
+        - name: exit
+          value: "$(params.exit-code)"
+      taskSpec:
+        params:
+          - name: exit
+            description: Código de saída da task
+            default: "0"
+            type: string
+        steps:
+          - name: inline-taks
+            image: registry.access.redhat.com/ubi8/ubi
+            script: |
+              echo "Executando inline task"
+              exit $(params.exit)
+
+  finally:
+    - name: send-notification
+      when:
+        - input: $(tasks.inline-task.status)
+          operator: notin
+          values:
+            - "Failed"
+      taskSpec:
+        steps:
+          - name: send-email
+            image: registry.access.redhat.com/ubi8/ubi
+            script: |
+              echo "Enviando email de notificação"
+
+    - name: notification-error
+      when:
+        - input: $(tasks.inline-task.status)
+          operator: in
+          values:
+            - "Failed"
+      taskSpec:
+        steps:
+          - name: log-error
+            image: registry.access.redhat.com/ubi8/ubi
+            script: |
+              echo "Erro ao executar pipeline"

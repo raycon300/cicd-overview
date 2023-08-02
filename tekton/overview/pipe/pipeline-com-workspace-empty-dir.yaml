@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-com-workspace-empty-dir
+spec:
+  workspaces:
+    - name: codebase
+
+  tasks:
+    - name: clonar
+      taskRef:
+          name: git-clone
+      workspaces:
+        - name: source
+          workspace: codebase
+
+    - name: listar
+      taskRef:
+          name: file-list
+      workspaces:
+        - name: source
+          workspace: codebase
+      runAfter:
+        - clonar
+      

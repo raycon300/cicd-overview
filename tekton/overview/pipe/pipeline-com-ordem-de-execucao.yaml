@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-com-ordem-de-execucao
+spec:
+  params:
+    - name: texto-boas-vindas
+      type: string
+      default: "Fala comigo!"
+      description: Mensagem de boas vindas
+
+  tasks:
+    - name: imprimir-hello
+      taskRef:
+          name: primeira-task
+
+    - name: imprimir-ola
+      params:
+        - name: mensagem
+          value: "$(params.texto-boas-vindas)"
+      runAfter:
+        - imprimir-hello
+      taskRef:
+          name: task-com-parametro
+      

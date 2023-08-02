@@ -1,0 +1,10 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: primeira-pipeline
+spec:
+  tasks:
+    - name: imprimir-hello
+      taskRef:
+          name: primeira-task
+      

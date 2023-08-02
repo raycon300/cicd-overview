@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: pipeline-com-workspace-pvc-run-
+spec:
+  pipelineRef:
+    name: pipeline-com-workspace-pvc
+  timeouts:
+    pipeline: 20m0s
+  workspaces:
+    - name: codebase
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi

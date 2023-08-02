@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: multiplas-etapas
+spec:
+  steps:
+    - name: primeira
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+        - -c
+        - echo "Primeira Etapa executando"
+
+    - name: segunda
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+        - -c
+        - echo "Segunda Etapa executando"

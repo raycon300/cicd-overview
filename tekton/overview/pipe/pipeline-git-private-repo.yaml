@@ -1,0 +1,34 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-git-private-repo
+spec:
+  workspaces:
+    - name: codebase
+  
+  params:
+    - name: git-repo
+      type: string
+      description: Git repository URL
+
+  tasks:
+    - name: clonar
+      params:
+        - name: repositorio
+          value: "$(params.git-repo)"
+      taskRef:
+          name: git-clone # (1) task declarada no arquivo tasks/git-clone-and-list-split-tasks.yaml
+      workspaces:
+        - name: source
+          workspace: codebase
+
+    - name: listar
+      taskRef:
+          name: file-list
+      workspaces:
+        - name: source
+          workspace: codebase
+      runAfter:
+        - clonar
+
+      

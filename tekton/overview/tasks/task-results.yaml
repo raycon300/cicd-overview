@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: task-results
+spec:
+  results:
+    - name: mensagem
+      description: Mensagem que vai ser compartilhada
+
+  steps:
+    - name: exibir-mensagem-antes-de-codificar-em-base64
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - echo "Primeira Etapa executando"
+
+    - name: escrever-mensagem
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - echo "encode msg Primeira Etapa executando ..." && echo "Primeira Etapa executando" | base64 > $(results.mensagem.path)
+
+    - name: ler-mensagem
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command:
+        - /bin/bash
+        - -c
+        - cat $(results.mensagem.path)
